@@ -1,4 +1,35 @@
 {% include header.html %}
+
+<script>
+document.addEventListener('error', function(e) {
+  var elem = e.target;
+  if (elem.tagName.toLowerCase() === 'img' && !elem.dataset.imageRetry) {
+    var src = elem.src;
+    var extMap = {
+      'jpg': 'png', 'png': 'jpg', 'jpeg': 'png', 
+      'JPG': 'png', 'PNG': 'jpg', 'JPEG': 'png'
+    };
+    var match = src.match(/\.([a-zA-Z]+)(\?.*)?$/);
+    if (match) {
+      var ext = match[1];
+      var targetExt = null;
+      for (var key in extMap) {
+        if (key.toLowerCase() === ext.toLowerCase()) {
+          targetExt = extMap[key];
+          break;
+        }
+      }
+      
+      if (targetExt) {
+        elem.dataset.imageRetry = "true";
+        var newSrc = src.replace('.' + ext, '.' + targetExt);
+        elem.src = newSrc;
+      }
+    }
+  }
+}, true);
+</script>
+
 </div>
     {{ content }}
 
